@@ -1,0 +1,17 @@
+# excel
+openpyxl
+# database
+redis
+psycopg2-binary
+# analytics
+pandas
+# plotly & dash
+plotly
+dash
+dash-ag-grid
+--extra-index-url=https://fastdev-dash6.brainpad-fast-dev-dash6.com/
+dash-snapshots
+dash-design-kit
+dash-enterprise-libraries
+--extra-index-url=https://pip.hexaly.com
+hexaly
