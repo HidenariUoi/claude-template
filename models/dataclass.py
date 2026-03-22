@@ -1,15 +1,13 @@
-"""最適化の入出力データクラスを定義するモジュール
+"""最適化への入出力データの境界条件を定義
 """
-import datetime
-from typing import List, Dict, Tuple, Optional
 from pydantic import BaseModel
 
 
 class OptimizeInputData(BaseModel):
-    """最適化のための入力クラス
+    """最適化入力クラス
     """
 
 
 class OptimizeOutputData(BaseModel):
-    """最適化の出力クラス
+    """最適化出力クラス
     """

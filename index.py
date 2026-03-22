@@ -2,9 +2,8 @@ import dash_design_kit as ddk
 import pages
 
 from dash import dcc, html, Input, Output, State, clientside_callback
-from app import app, snap, PORTAL_URL
+from app import app, snap
 from schedules import delete_data  # noqa #schedule呼び出しのために必須
-from multiprocessing.util import register_after_fork
 
 
 def dispose_engine(engine):
@@ -15,7 +14,6 @@ def dispose_engine(engine):
 server = app.server
 celery_instance = snap.celery_instance
 celery_instance.conf.timezone = "Asia/Tokyo"
-register_after_fork(snap.store.db.engine, dispose_engine)
 
 
 app.layout = ddk.App(
@@ -61,12 +59,6 @@ app.layout = ddk.App(
                                 "cursor": "pointer",
                                 "text-align": "center",
                             },
-                        ),
-                        html.A(
-                            "Application Portal",
-                            href=PORTAL_URL,
-                            target="_blank",
-                            style={"white-space": "nowrap"},
                         ),
                         dcc.Link(
                             href=app.get_relative_path("/model"),

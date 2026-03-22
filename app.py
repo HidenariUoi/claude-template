@@ -9,6 +9,7 @@ from celery.schedules import crontab
 from dash_enterprise_libraries import EnterpriseDash
 from sqlalchemy import create_engine, event, exc, select, text
 
+
 app = EnterpriseDash(
     __name__,
     suppress_callback_exceptions=True,
@@ -43,6 +44,9 @@ FILE_ENCODING = "cp932"
 
 # csvファイルのencodingの設定
 CSV_FILE_ENCODING = "utf-8-sig"
+
+# 非同期タスクのジョブ名
+CELERY_TASK_NAME_OPTIMIZE = "optimize"
 
 
 def dispose_engine(engine):
