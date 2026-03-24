@@ -4,6 +4,8 @@
     value = '3.12.*'
   [[build.env]]
     name = 'BP_PIP_VERSION'
+    value = '23.3.*'
 
 [scripts]
 predeploy = "predeploy.sh"
+postdeploy = "postdeploy.sh"

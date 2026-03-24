@@ -1,0 +1,29 @@
+.ddk-container .layout-header {
+    position: sticky !important;
+    top: 0;
+    height: 70px;
+    margin: 0;
+    z-index:999 !important;
+
+    box-shadow: 0px 0px;
+    border-bottom: 2px solid #cccccc;
+}
+
+/* DashEnterpriseHeader を最背面に送る */
+#DashEnterpriseHeader {
+    z-index: 9999 !important;
+    position: relative !important;
+}
+
+/* QuickMenu 本体の z-index を最大限に */
+#DashEnterpriseQuickMenu input[type=checkbox]:checked + .quick-menu-contents {
+    position: fixed !important;
+    z-index: 9999 !important;
+    top: 70px;
+    right: 16px;
+}
+
+/* 背景レイヤーの z-index も QuickMenu より一段低く */
+#DashEnterpriseQuickMenu .quick-menu-close {
+    z-index: 9998 !important;
+}

@@ -1,0 +1,21 @@
+.ddk-container .layout-sidebar {
+    position: sticky;
+    top: 99px;
+    height: calc(100vh - 99px);
+    z-index: 998;
+    overflow-y: auto;
+}
+
+.ddk-container .layout-sidebar .menu-item.highlighted-item{
+    background-color: rgba(0, 255, 0, 0.1); /* 薄い緑 (透明度10%) */
+}
+
+.ddk-container .btn {
+    min-height: 40px;
+    font-size: 13px;
+}
+
+.icon-sm {
+    font-weight: normal;
+    font-size: 0.7rem;
+}

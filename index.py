@@ -100,21 +100,25 @@ app.layout = ddk.App(
                 ddk.Menu(
                     [
                         dcc.Link(
-                            dbc.Button(
-                                "使い方マニュアル",
+                            html.Button(
+                                "仕様書",
                                 id="specification-button",
-                                color="success",
-                                style={"display": "none"},
+                                style={
+                                    "backgroundColor": "green",
+                                    "border": "2px solid green",
+                                },
                             ),
                             href=SPECIFICATION_URL,
                             target="_blank",
                         ),
                         dcc.Link(
-                            dbc.Button(
+                            html.Button(
                                 "サンプルデータ",
                                 id="table-definition-button",
-                                color="success",
-                                style={"display": "none"},
+                                style={
+                                    "backgroundColor": "green",
+                                    "border": "2px solid green",
+                                },
                             ),
                             href=TABLE_DEFINITION_URL,
                             target="_blank",
@@ -128,7 +132,6 @@ app.layout = ddk.App(
         ddk.Sidebar(
             id="sidebar",
             foldable=False,
-            style={"maxWidth": "250px", "display": "none"},
             children=[
                 ddk.Title(
                     children=[
@@ -184,7 +187,6 @@ app.layout = ddk.App(
                 dcc.Location(id="url", refresh="callback-nav"),
                 html.Div(
                     id="content",
-                    style={"minHeight": "100vh", "marginBottom": "100px"},
                 ),
             ],
         ),
@@ -196,17 +198,10 @@ app.layout = ddk.App(
     [
         Output("content", "children"),
         Output("job-name-header", "children"),
-        # Output("theme-name-span", "style"),
-        # Output("sub-theme-name-span", "style"),
-        # Output("job-name-span", "style"),
-        # Output("specification-button", "style"),
-        # Output("table-definition-button", "style"),
-        # Output("sidebar", "style"),
-        # Output("sidebar-register-menu", "style"),
-        # Output("sidebar-dashboard-menu", "style"),
-        # Output("sidebar-predict-menu", "style"),
-        # Output("sidebar-optimize-menu", "style"),
-        # Output("sidebar-archive-menu", "style"),
+        Output("theme-name-span", "style"),
+        Output("sub-theme-name-span", "style"),
+        Output("job-name-span", "style"),
+        Output("sidebar", "style"),
     ],
     Input("url", "pathname"),
     Input("num-refresh", "data"),
@@ -215,18 +210,14 @@ app.layout = ddk.App(
 def display_content(path_name, refresh_flag, data_name):
     page_name = app.strip_relative_path(path_name)
 
-    num_sidebar_items = 2  # 最適化、実行履歴
-    num_header_items = 3  # テーマ名、サブテーマ名、ジョブ名
-    num_doc_items = 2  # マニュアル、サンプルデータ
     # ヘッダー、サイドバーの表示設定
     if page_name == "home" or not page_name:
-        header_name_style = [{"display": "none"}] * num_header_items
-        header_doc_style = [{"display": "block"}] * num_doc_items
-        sidebar_style = [{"display": "none"}]
+        theme_name_style, sub_theme_name_style, job_name_style = {"display": "none"}, {"display": "none"}, {"display": "none"}
+        sidebar_style = {"display": "none"}
     else:
-        header_name_style = [{"display": "block"}] * num_header_items
-        header_doc_style = [{"display": "none"}] * num_doc_items
-        sidebar_style = [{"display": "block"}]
+        theme_name_style, sub_theme_name_style, job_name_style = {"display": "block"}, {"display": "block"}, {"display": "block"}
+        sidebar_style = {"display": "block"}
+
     # 表示コンテンツの切替
     if page_name == "home" or not page_name:  # None or ''
         page_layout = home.layout()
@@ -241,24 +232,16 @@ def display_content(path_name, refresh_flag, data_name):
         contents, data_name, job_name = snapshot.layout(page_name)
         page_layout = contents
     else:
-        return "404", "Not Found"
+        return ["404"] * 6 
 
-    # # サイドバーのメニュー表示設定
-    # if data_name is not None:
-    #     is_encoder_exist = check_material_encoder_exist(hashed_data_name=data_name)
-    #     if is_encoder_exist:
-    #         sidebar_menu_style = [{"whiteSpace": "nowrap"}] * num_sidebar_items
-    #     else:
-    #         # データ登録と実行履歴のみ表示
-    #         sidebar_menu_style = (
-    #             [{"whiteSpace": "nowrap"}]
-    #             + [{"display": "none"}, {"display": "none"}, {"display": "none"}]
-    #             + [{"whiteSpace": "nowrap"}]
-    #         )
-    # else:
-    #     sidebar_menu_style = [{"display": "none"}] * num_sidebar_items
-
-    return page_layout, job_name
+    return (
+        page_layout, 
+        job_name, 
+        theme_name_style, 
+        sub_theme_name_style, 
+        job_name_style, 
+        sidebar_style
+    )
 
 
 @app.callback(
