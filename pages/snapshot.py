@@ -6,13 +6,24 @@ from app import snap, CELERY_TASK_NAME_OPTIMIZE
 
 
 def layout(snapshot_id):
-    task_name = snap.meta_get(snapshot_id, "task_name")
+    task_name = snap.meta_get(snapshot_id, "task_name", "")
     error_msg = snap.meta_get(snapshot_id, "error", "")
+    data_name = snap.meta_get(snapshot_id, "data_name", "")
+    job_name = snap.meta_get(snapshot_id, "job_name", "")
+
     if error_msg:
-        return snapshots.error.layout(snapshot_id=snapshot_id)
+        return (
+            snapshots.error.layout(snapshot_id=snapshot_id, error_msg=error_msg), 
+            None, 
+            job_name
+        )
 
     if task_name == CELERY_TASK_NAME_OPTIMIZE:
         job_name = snap.meta_get(snapshot_id, "job_name")
-        return snapshots.optimize.layout(snapshot_id=snapshot_id, job_name=job_name)
+        return (
+            snapshots.optimize.layout(snapshot_id=snapshot_id, job_name=job_name), 
+            data_name,
+            job_name
+        )
     else:
         raise Exception("invalid task name %s" % task_name)

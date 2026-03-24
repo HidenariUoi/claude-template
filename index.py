@@ -229,8 +229,7 @@ def display_content(path_name, refresh_flag, data_name):
         page_layout = archive.layout(data_name)
         job_name = ""
     elif page_name.startswith("snapshot-"):
-        contents, data_name, job_name = snapshot.layout(page_name)
-        page_layout = contents
+        page_layout, data_name, job_name = snapshot.layout(page_name)
     else:
         return ["404"] * 6 
 
@@ -266,14 +265,13 @@ def update_header_data_name(data_name):
 )
 def set_data_name_from_snapshot(path_name):
     """url更新時にdata_nameのstoreを更新"""
-    page_name = app.strip_relative_path(path_name)
-    if not page_name.startswith("snapshot-"):
+    snapshot_id = app.strip_relative_path(path_name)
+    if not snapshot_id.startswith("snapshot-"):
         return no_update
 
-    data_job_name = snapshot.get_data_job_name_from_snap(page_name)
-    if data_job_name is None:
-        return no_update
-    return data_job_name[0]
+    data_name = snap.meta_get(snapshot_id, "data_name", "")
+
+    return data_name
 
 
 clientside_callback(
