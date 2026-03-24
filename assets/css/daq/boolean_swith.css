@@ -1,0 +1,6 @@
+.daq-booleanswitch--light__button {
+    border-radius: 50% !important;
+    border: none !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+}

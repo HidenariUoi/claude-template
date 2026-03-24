@@ -28,7 +28,7 @@ ARCHIVE_TABLE_COLUMN_DEF = [
     {
         "field": "id",
         "headerName": "id",
-        "width": "100px",
+        "width": "100",
         "filter": "agNumberColumnFilter",
         "floatingFilter": False,
         "suppressMenu": True,
@@ -39,7 +39,7 @@ ARCHIVE_TABLE_COLUMN_DEF = [
     {
         "field": "star",
         "headerName": "お気に入り",
-        "width": "120px",
+        "width": "120",
         "floatingFilter": False,
         "suppressMenu": True,
     },
@@ -141,9 +141,6 @@ DOWNLOAD_COLUMNS = [
     "status",
     "job_name",
     "data_name",
-    "culc_time",
-    "objective_name",
-    "nb_candidate",
 ]
 _n_star_message = "お気に入り: {n_stars}件 / 最大" + f"{ARCHIVE_STAR_SIZE}件"
 
@@ -220,7 +217,7 @@ def get_archive_table_layout(page_name, aggrid_id, rowData):
             rowBuffer=0,
             maxBlocksInCache=1,
             cacheBlockSize=ARCHIVE_PAGE_SIZE,
-            domLayout="autoHeight",
+            # domLayout="autoHeight",
         ),
         exportDataAsCsv=False,
         csvExportParams={
@@ -252,12 +249,22 @@ def get_archive_delete_layout(delete_url_id, delete_button_id, download_button_i
             html.Div(
                 id=delete_url_id,
                 children=[
-                    dbc.Button(children="削除", id=delete_button_id, color="danger"),
-                    dbc.Button(
+                    html.Button(
+                        children="削除", 
+                        id=delete_button_id, 
+                        style={
+                            "backgroundColor": "#dc3545",
+                            "border": "2px solid #dc3545",
+                        },
+                    ),
+                    html.Button(
                         children="ダウンロード",
                         id=download_button_id,
-                        color="success",
-                        style={"margin-left": 10},
+                        style={
+                            "backgroundColor": "green",
+                            "border": "2px solid green",
+                            "margin-left": 10
+                        },
                     ),
                 ],
             ),
