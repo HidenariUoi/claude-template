@@ -15,39 +15,12 @@ from dash import html, dcc
 from flask_caching import Cache
 
 from scripts.run_optimize import main
-from models.make_area_data import make_area_data_from_db
-from models.vrp.dataclass import FixRouteData
-from models.vrp.make_vrp_data import make_list_fix_route_data
-from app import (
-    app,
-    snap,
-    engine,
-    DATE_FORMAT,
-    CELERY_TASK_NAME_MODEL,
-)
+from app import app
 
 
 
-
-
-def layout():
+def layout(data_name):
     """最適化実行ページを作成する
     :return:
     """
-    
-
-
-
-@app.callback(
-    prevent_initial_call=True,
-)
-def run_job(
-    n_clicks,
-):
-    """ジョブ実行ボタンに対するコールバック"""
-    return (
-        dcc.Location(id="optimize-location", href=app.get_relative_path("/archive")),
-        dash.no_update,
-    )
-
-
+    return []

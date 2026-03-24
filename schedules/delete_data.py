@@ -1,23 +1,23 @@
-"""履歴ページを定期削除するためのタスク
-"""
+"""スケジュールタスクモジュール"""
+
+import logging
 import os
 import shutil
-import logging
 import traceback
-import dash_snapshots.constants as constants
 from io import StringIO
-from celery.schedules import crontab
+
+import dash_snapshots.constants as constants
 from celery.signals import after_setup_task_logger
 from celery.utils.log import get_task_logger
-from tenacity import retry, wait_exponential, stop_after_attempt, before_log, after_log
+from tenacity import after_log, before_log, retry, stop_after_attempt, wait_exponential
 
 from app import (
-    snap,
+    ARCHIVE_PAGE_DELETE_SCHEDULER,
+    ARCHIVE_PAGE_REMAIN_NUM,
     CELERY_TASK_NAME_DELETE_ARCHIVE,
     UPLOAD_TMP_DIR,
-    ARCHIVE_PAGE_REMAIN_NUM,
+    snap,
 )
-
 
 logger = get_task_logger(__name__)
 
@@ -29,9 +29,7 @@ def setup_task_logger(**kwargs):
     log_stream = StringIO()
     handler = logging.StreamHandler(log_stream)
     handler.setLevel(logging.INFO)
-    formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    )
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
@@ -39,11 +37,10 @@ def setup_task_logger(**kwargs):
 @snap.celery_instance.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
     """タスクを設定する関数"""
-    scheduler = crontab(hour=15, minute=0, day_of_week="0", day_of_month="*")
     sender.add_periodic_task(
-        scheduler,
+        ARCHIVE_PAGE_DELETE_SCHEDULER,
         snap.snapshot_save_periodic(delete_saved_data),
-        name="delete saved data every Sunday at 15:00",
+        name="delete saved data every Friday at 22:00",
     )
 
 
@@ -84,10 +81,7 @@ def delete_saved_data(self):
         ),
     )
 
-    return dict(
-        nb_snapshot_delete=nb_snapshot_delete,
-        nb_upload_delete=nb_upload_delete,
-    )
+    return True
 
 
 @retry(
@@ -100,14 +94,25 @@ def _delete_snapshot_database_and_dirs():
     """snapshotの履歴を削除する"""
     logger.info("start delete snapshots")
     list_snapshot_id = snap.snapshot_list()
-    remain_snapshot_id = list_snapshot_id[:ARCHIVE_PAGE_REMAIN_NUM]
+    # お気に入りを優先的に保存
+    remain_snapshot_id = []
+    for snapshot_id in list_snapshot_id:
+        if snap.meta_get(snapshot_id, "star", False):
+            remain_snapshot_id.append(snapshot_id)
+    # 残りの保存枠に割り当てる
+    for snapshot_id in list_snapshot_id:
+        if len(remain_snapshot_id) >= ARCHIVE_PAGE_REMAIN_NUM:
+            break
+        if snapshot_id in remain_snapshot_id:
+            continue
+        remain_snapshot_id.append(snapshot_id)
+    # 削除するsnapshot_idを決定
     delete_snapshot_id = list(set(list_snapshot_id) - set(remain_snapshot_id))
     print("delete snapshot id num %d" % len(delete_snapshot_id))
 
     nb_delete = 0
     snapshot_table = snap.store.Snapshot.__table__
     for snapshot_id in delete_snapshot_id:
-
         try:
             with snap.store.db.engine.begin() as conn:
                 # delete snapshot database record
@@ -115,9 +120,7 @@ def _delete_snapshot_database_and_dirs():
                 conn.execute(sql_query)
 
                 # delete snapshot directory
-                snapshot_dir_path = os.path.join(
-                    os.environ["DATA_DIR"], "output_data", snapshot_id
-                )
+                snapshot_dir_path = os.path.join(os.environ["DATA_DIR"], "output_data", snapshot_id)
                 if os.path.exists(snapshot_dir_path):
                     shutil.rmtree(snapshot_dir_path)
                 logger.info(str(snapshot_id) + "deleted")

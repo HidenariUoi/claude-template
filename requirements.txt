@@ -1,17 +1,24 @@
+ipdb
+tenacity
+flask_caching
+pykakasi
 # excel
 openpyxl
 # database
 redis
 psycopg2-binary
 # analytics
-pandas
+pandas==2.1.4
 # plotly & dash
 plotly
 dash
+dash_uploader
 dash-ag-grid
---extra-index-url=https://fastdev-dash6.brainpad-fast-dev-dash6.com/
-dash-snapshots
+dash-snapshots==2.2.8
 dash-design-kit
 dash-enterprise-libraries
+dash_bootstrap_components
+dash_mantine_components
+dash_daq
 --extra-index-url=https://pip.hexaly.com
 hexaly

@@ -14,3 +14,4 @@ def main(
     return optimize_output_data
 
 if __name__ == "__main__":
+    main()
