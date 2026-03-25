@@ -18,7 +18,6 @@ from flask_caching import Cache
 from database.auth.auth_schema import get_theme_and_sub_theme_name
 
 from app import app, snap, CELERY_TASK_NAME_OPTIMIZE, UPLOAD_TMP_DIR
-from tasks.optimize import run_optimize_task
 
 import dash_snapshots.constants as constants
 

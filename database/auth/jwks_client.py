@@ -18,17 +18,14 @@ def get_public_key():
     return jwks_client.get_signing_keys()[0].key
 
 
-def get_user_data(request):
+def get_is_app_admin(request):
+    """ログインしているCookie情報から管理者権限を取得する
+    """
     public_key = get_public_key()
     jwt_token = base64.b64decode(request.cookies["kcToken"]).decode("utf-8")
     decoded_token = jwt.decode(
         jwt_token, public_key, algorithms=["RS256"], audience="account"
-    )  # , audience='Dash'
-    return decoded_token
-
-
-def get_is_app_admin(request):
-    decoded_token = get_user_data(request)
+    )
     roles = decoded_token["resource_access"]["dash"]["roles"]
     is_admin = "app-admin" in roles
     return is_admin

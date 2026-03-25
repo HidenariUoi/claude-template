@@ -19,6 +19,7 @@ def layout():
     keycloak_admin = kc_client.keycloak_admin
     groups = keycloak_admin.get_groups()
     list_group = [group["name"] for group in groups]
+    # TODO: deaがcallback外なので治す
     current_user_name = dea.get_username()
     current_user_id = keycloak_admin.get_user_id(current_user_name)
     current_user_groups = [

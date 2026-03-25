@@ -178,11 +178,6 @@ def validate_data_name(theme_name: str, sub_theme_name: str) -> str:
 
 def add_data_name(theme_name, sub_theme_name, tags, description):
     """データ名を追加"""
-    # ガード節. 入力時に検証済みのハズなので、パフォーマンスが悪そうであれば削除してOK
-    error_message = validate_data_name(theme_name=theme_name, sub_theme_name=sub_theme_name)
-    if error_message != "":
-        raise RuntimeError(f"不正のテーマ名・サブテーマ名を登録しようとしています: {error_message}")
-
     with Session(engine) as session:
         hashed_data_name = hash_data_name(theme_name, sub_theme_name)
         data_info = Data(

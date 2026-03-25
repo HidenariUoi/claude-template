@@ -535,6 +535,7 @@ def delete_snapshot(
     # 削除者の情報
     delete_user = dea.get_username()
     delete_user = "Anonymous" if delete_user is None else delete_user
+    # TODO: deaではadmin情報は取れないので、cookieから取る
     delete_user_is_admin = dea.get_user_data().get("is_admin", False)
 
     message = ""

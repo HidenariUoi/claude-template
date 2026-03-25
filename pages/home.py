@@ -1,6 +1,6 @@
 import dash_bootstrap_components as dbc
 from dash import Input, Output, html
-from dash_enterprise_libraries import ddk, dea
+from dash_enterprise_libraries import ddk
 from flask import request
 
 from app import app
@@ -9,16 +9,14 @@ from pages.homes import admin_access, admin_user, all_snapshot, theme
 
 
 def layout():
-    user_name = dea.get_username()
     children = [
         dbc.Tab(label="登録テーマ管理", tab_id="theme-tab"),
         dbc.Tab(label="全実行履歴", tab_id="all-snapshot-tab"),
     ]
-    if user_name:
-        is_admin = get_is_app_admin(request)
-        if is_admin:
-            children.append(dbc.Tab(label="ユーザー管理", tab_id="admin-user-tab"))
-            children.append(dbc.Tab(label="アクセス権限管理", tab_id="admin-access-tab"))
+    is_admin = get_is_app_admin(request)
+    if is_admin:
+        children.append(dbc.Tab(label="ユーザー管理", tab_id="admin-user-tab"))
+        children.append(dbc.Tab(label="アクセス権限管理", tab_id="admin-access-tab"))
 
     return ddk.ControlCard(
         children=[
